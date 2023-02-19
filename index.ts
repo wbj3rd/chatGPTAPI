@@ -24,7 +24,7 @@ async function askChatGPT(question: string) {
   console.log(question);
 
   try {
-    const chatGPT = new ChatGPT('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',options);
+    const chatGPT = new ChatGPT( process.env["MY_SECRET"]! ,options);
     const res = await chatGPT.ask(question);
     console.log(res);
     //console.log(res.choices);
