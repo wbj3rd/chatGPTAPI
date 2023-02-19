@@ -7,7 +7,7 @@ import timeout from 'connect-timeout';
 
 let options = {
   temperature: 0.7, // OpenAI parameter
-  max_tokens: 4096, // OpenAI parameter [Max response size by tokens]
+  max_tokens: 1000, // OpenAI parameter [Max response size by tokens]
   top_p: 1, // OpenAI parameter
   frequency_penalty: 0, // OpenAI parameter
   presence_penalty: 0, // OpenAI parameter
