@@ -3,4 +3,4 @@
 tsc
 git add .
 git commit -m "auto commit"
-git push
+git push --set-upstream origin master -f
