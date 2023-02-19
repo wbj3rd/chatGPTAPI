@@ -45,7 +45,7 @@ app.post('/ask/chatGPT', async function (req, res, next) {
     try {
         let answer = await askChatGPT(req.body.question);
         console.log(answer);
-        res.send(answer);
+        res.json({ answer: answer });
     }
     catch (err) {
         next(err);
