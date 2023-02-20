@@ -39,7 +39,9 @@ async function askChatGPT(question: string) {
 const app = express();
 
 // Enable all CORS requests
-app.use(cors());
+app.use(cors({
+  origin: 'https://compliancegpt.us'
+}));
 app.use(timeout('60s'));
 
 // parse application/x-www-form-urlencoded
