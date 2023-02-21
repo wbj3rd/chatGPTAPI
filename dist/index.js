@@ -34,7 +34,7 @@ const app = express();
 app.use(cors({
     origin: [
         'https://compliancegpt.us',
-        //'http://localhost:4200'
+        'http://localhost:4200'
     ]
 }));
 app.use(timeout('60s'));
