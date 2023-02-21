@@ -56,6 +56,59 @@ app.post('/ask/chatGPT', async function (req, res, next) {
         next(err);
     }
 });
+app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
+    console.log(req.body);
+    //order
+    //extra attributes i.e. seperator,
+    var question = '';
+    try {
+        //let answer = await askChatGPT(question);
+        //console.log(answer);
+        res.json({ answer: question });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+app.post('/ask/chatGPT/tomakea/webpage', async function (req, res, next) {
+    console.log(req.body);
+    //order
+    //extra attributes i.e. seperator,
+    try {
+        let answer = await askChatGPT(req.body.question);
+        console.log(answer);
+        res.json({ answer: answer });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+app.post('/ask/chatGPT/tomakeawork/outplan', async function (req, res, next) {
+    console.log(req.body);
+    //order
+    //extra attributes i.e. seperator,
+    try {
+        let answer = await askChatGPT(req.body.question);
+        console.log(answer);
+        res.json({ answer: answer });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+app.post('/ask/chatGPT/tomakea/dietplan', async function (req, res, next) {
+    console.log(req.body);
+    //order
+    //extra attributes i.e. seperator,
+    try {
+        let answer = await askChatGPT(req.body.question);
+        console.log(answer);
+        res.json({ answer: answer });
+    }
+    catch (err) {
+        next(err);
+    }
+});
 const server = http.createServer(app);
 server.listen(3000, () => {
     console.log('Server is listening on port 3000');
