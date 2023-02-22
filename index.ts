@@ -76,18 +76,25 @@ app.post('/ask/chatGPT', async function (req, res, next) {
 app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
   //console.log(req.body);
   //order
-
+  // Generate an array of 25 objects total in this list [Financial goals,Books to read] that are 
+  // related to things in this list [The Matrix,Star Wars] sorted by Rating,Date except those 
+  // related to things in this list  [Grand Theft Auto,Meryl Streep] wrap each entry in 
+  // double qoutes array should be in the form [{answer:[< answer chatgpt found goals here>],item:{Financial goals,
+  // relation: [The Matrix,Star Wars],sortCategory:[Rating,Date], sortValues:[<sort values cahtgpt used go here>], 
+  // excpetions:[Grand Theft Auto,Meryl Streep]  }      ]
   //extra attributes i.e. seperator,
-  var question = `Generate an array of ${req.body.length} objects in this list [${req.body.thing.join("," )}] `+
-  `that are related to things in this list [${req.body.relevance.join(",")}] `+
-  `sorted by ${ req.body.order.join(",") } `+
+  var question = `Generate an array of ${req.body.length} objects total in this list [${req.body.thing.join(", " )}] `+
+  `that are related to things in this list [${req.body.relevance.join(", ")}] `+
+  `find or create realistic values for all thing in this list :[Rating,Date] for each answer, `+
+  `sorted by ${ req.body.order.join(", ") } `+
   // accidentally jewel  add extra field to array
   //`exclude those related to ${req.body.filter2.join(",")} `+
-  `exclude those related to things in this list  [${req.body.filter2.join(",")}] `+
-  `wrap each entry in double qoutes array should be in the form [{answer: [<answer chatgpt found goes here>] ,  item:{${req.body.thing[0]},`+
+  `exclude those related to things in this list  [${req.body.filter2.join(", ")}] `+
+  `wrap each entry in double qoutes array should be in the form [{answer: [<answer chatgpt found goes here>] ,  category:${req.body.thing[0]},`+
   `relation: [${req.body.relevance.join(",")}],sortCategory:[${req.body.order.join(",")}], 
     sortValue:[<values chatgpt used for sorting go here>], 
-    excpetions:[${req.body.filter2.join(",")}]  }      ]`
+    excpetions:[${req.body.filter2.join(",")}]  }      ] `+
+    `each answer should only contain 1 response ` 
   console.log(question)
   try {
     let answer = await askChatGPT(question);
