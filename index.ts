@@ -78,7 +78,7 @@ app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
   //order
 
   //extra attributes i.e. seperator,
-  var question = `Generate an array of ${req.body.length} things in this list [${req.body.thing.join("," )}] `+
+  var question = `Generate an array of ${req.body.length} objects in this list [${req.body.thing.join("," )}] `+
   `that are related to things in this list [${req.body.relevance.join(",")}] `+
   `sorted by ${ req.body.order.join(",") } `+
   // accidentally jewel  add extra field to array
