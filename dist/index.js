@@ -120,7 +120,7 @@ app.post('/ask/chatGPT/tomakea/angular-component', async function (req, res, nex
     console.log(req.body);
     //order
     //extra attributes i.e. seperator,
-    var question = ;
+    var question = '';
     try {
         let answer = await askChatGPT(req.body.question);
         console.log(answer);

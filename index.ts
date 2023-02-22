@@ -149,7 +149,7 @@ app.post('/ask/chatGPT/tomakea/angular-component', async function (req, res, nex
   //order
 
   //extra attributes i.e. seperator,
-  var question  = 
+  var question  = ''
 
   try {
     let answer = await askChatGPT(req.body.question);
