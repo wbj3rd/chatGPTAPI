@@ -60,10 +60,12 @@ app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
     //console.log(req.body);
     //order
     //extra attributes i.e. seperator,
-    var question = `Generate an array of ${req.body.length} objects about ${req.body.thing.join(",")} ` +
-        `that are related to ${req.body.relevance.join(",")} ` +
-        `sorted by ${req.body.order.join(",")} ` +
-        `exclude those related to ${req.body.filter2.join(",")} ` +
+    var question = `Generate an array of ${req.body.length} things in this list [${req.body.thing.join(",")}] ` +
+        `that are related to thiings in this list [${req.body.relevance.join(",")}] ` +
+        `sorted by [${req.body.order.join(",")}] ` +
+        // accidentally jewel  add extra field to array
+        //`exclude those related to ${req.body.filter2.join(",")} `+
+        `excpet those related to things in this list  [${req.body.filter2.join(",")}] ` +
         `wrap each entry in double qoutes`;
     console.log(question);
     try {
@@ -105,6 +107,20 @@ app.post('/ask/chatGPT/tomakea/dietplan', async function (req, res, next) {
     console.log(req.body);
     //order
     //extra attributes i.e. seperator,
+    try {
+        let answer = await askChatGPT(req.body.question);
+        console.log(answer);
+        res.json({ answer: answer });
+    }
+    catch (err) {
+        next(err);
+    }
+});
+app.post('/ask/chatGPT/tomakea/angular-component', async function (req, res, next) {
+    console.log(req.body);
+    //order
+    //extra attributes i.e. seperator,
+    var question = ;
     try {
         let answer = await askChatGPT(req.body.question);
         console.log(answer);
