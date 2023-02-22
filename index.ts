@@ -83,9 +83,11 @@ app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
   `sorted by ${ req.body.order.join(",") } `+
   // accidentally jewel  add extra field to array
   //`exclude those related to ${req.body.filter2.join(",")} `+
-  `excpet those related to things in this list  [${req.body.filter2.join(",")}] `+
-  `wrap each entry in double qoutes array should be in the form [{item:{${req.body.thing[0]},`+
-  `relation: [${req.body.relevance.join(",")}],sortCategory:[${req.body.order.join(",")}], sortValue:[?,?,? ...], excpetions:[${req.body.filter2.join(",")}]  }      ]`
+  `exclude those related to things in this list  [${req.body.filter2.join(",")}] `+
+  `wrap each entry in double qoutes array should be in the form [{answer: [<answer chatgpt found goes here>] ,  item:{${req.body.thing[0]},`+
+  `relation: [${req.body.relevance.join(",")}],sortCategory:[${req.body.order.join(",")}], 
+    sortValue:[<values chatgpt used for sorting go here>], 
+    excpetions:[${req.body.filter2.join(",")}]  }      ]`
   console.log(question)
   try {
     let answer = await askChatGPT(question);
