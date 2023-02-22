@@ -57,14 +57,14 @@ app.post('/ask/chatGPT', async function (req, res, next) {
     }
 });
 app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
-    console.log(req.body);
+    //console.log(req.body);
     //order
     //extra attributes i.e. seperator,
     var question = `Generate an array of ${req.body.length} objects about ${req.body.thing.join(",")} ` +
-        `that are related to ${req.body.relevance.join(",")}` +
-        `sorted by ${req.body.order.join(",")}` +
-        `exclude those related to ${req.body.filter2.join(",")}` +
-        `wrap each entery in double qoutes`;
+        `that are related to ${req.body.relevance.join(",")} ` +
+        `sorted by ${req.body.order.join(",")} ` +
+        `exclude those related to ${req.body.filter2.join(",")} ` +
+        `wrap each entry in double qoutes`;
     console.log(question);
     try {
         let answer = await askChatGPT(question);
