@@ -97,7 +97,7 @@ app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
  
   `Find accurate non-fiction values for the attributes ([${req.body.attributeType.join(" and ")}]) for each array entry.`+
   `Add 5 attributes common to ${req.body.subThingType}  ${req.body.thingType}  that would help describe each entry.`+
-  `never include items that have ${req.body.attributeType.join(" or ")} values equal to ([${req.body.antiAttributeType.join(" or ")}])`+
+  `never include items that have ${req.body.attributeType.join(" or ")} values equal to ([${req.body.antiAttributeType.join(" and ")}])`+
   `sort by ([${ req.body.orderType.join(" and ") }]) desc`+
   ``+
   // accidentally jewel  add extra field to array
@@ -112,7 +112,7 @@ app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
   ` [(sort  category)]:(<place where sort value is from>),`+
   ` [(<place where sort value is from>)_value]:<numerical sort for [sort category]>`+
   ` relavancyScore:<score from 1 to 10 of how relevant  <chatGPT answer goes here> is to <relevant thing goes here>  >,`+
-  ` relevancyReason:<reason for relevancy score>,`+
+  ` relevancyReason:<reason for relevancy score (less than 5 words)>,`+
     ` <attribute>: <attribute_value (dont give vague values for attributes)>,`+
     ` relation:< extremely unique non-fiction description of how <relevant thing> is relavant to the <answer> , that is different from the relevancyReason>  `+
     `  , length:<list length> }]` +
@@ -121,11 +121,13 @@ app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
     ` never return non-fiction items with greater than 5 relevancyScore `+
     ` never return non-fictional values `+
     ` never return an array shorter than ${req.body.selectedLength} `+
-
+    `count the list before you return it and make sure it is as long as i requested`+
     ` return the list in json format` 
   try {
+  
     let answer = await askChatGPT(question);
     console.log(answer);
+    
     res.json({ answer: answer });
   } catch (err) {
     next(err);
