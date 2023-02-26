@@ -82,20 +82,47 @@ app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
   // relation: [The Matrix,Star Wars],sortCategory:[Rating,Date], sortValues:[<sort values cahtgpt used go here>], 
   // excpetions:[Grand Theft Auto,Meryl Streep]  }      ]
   //extra attributes i.e. seperator,
-  var question = `Generate an array of ${req.body.length} objects total in this list [${req.body.thing.join(", " )}] `+
-  `that are related to things in this list [${req.body.relevance.join(", ")}] `+
-  `find or create realistic values for all thing in this list :[Rating,Date] for each answer, `+
-  `sorted by ${ req.body.order.join(", ") } `+
+
+  var question = 
+  `chatGPT never includes items that have [${req.body.attributeType.join(" or ")}] attribute values equal to any in this list ([${req.body.antiAttributeType.join(" or ")}]) `+
+  `chatGPT never returns non-fiction items with greater than 5 relevancyScore `+
+  `chatGPT never returns an array shorter than ${req.body.selectedLength} `+
+  `chatGPT never return non-fictional values. `+
+  `Generate an array of ${req.body.selectedLength} objects total,`+`
+   that consist of non-fictional ([${req.body.thingType.join(" and " )}]),  `+
+
+  `that are highly correlated to ([${req.body.subThingType.join(" or ")}]).`+
+  //but not filter goes here XXXXXXXXXXXXXXXXXXX
+  //`find or create realistic values for all thing in this list, `+
+ 
+  `Find accurate non-fiction values for the attributes ([${req.body.attributeType.join(" and ")}]) for each array entry.`+
+  `Add 5 attributes common to ${req.body.subThingType}  ${req.body.thingType}  that would help describe each entry.`+
+  `never include items that have ${req.body.attributeType.join(" or ")} values equal to ([${req.body.antiAttributeType.join(" or ")}])`+
+  `sort by ([${ req.body.orderType.join(" and ") }]) desc`+
+  ``+
   // accidentally jewel  add extra field to array
   //`exclude those related to ${req.body.filter2.join(",")} `+
-  `exclude those related to things in this list  [${req.body.filter2.join(", ")}] `+
-  `wrap each entry in double qoutes array should be in the form [{answer: [<answer chatgpt found goes here>] ,  category:${req.body.thing[0]},`+
-  `relation: [${req.body.relevance.join(",")}],sortCategory:[${req.body.order.join(",")}], 
-    sortValue:[<values chatgpt used for sorting go here>], 
-    excpetions:[${req.body.filter2.join(",")}]  }      ] `+
-    `each answer should only contain 1 response `+
-    `return the list in json format` 
-  console.log(question)
+
+  //`Exclude those related to (one of the things in this list[${req.body.join(", ")}](one of the things in this list[${req.body.filter2.join(", ")}])]. `+
+  ` The answer should be in the form `+
+  `[{answer: <answer chatgpt found goes here> ,`+
+  ` category: <thing goes here>,`+
+  ` relavantTo: <relevant thing goes here>,`+
+  ` sortType:(<sort category>),`+
+  ` [(sort  category)]:(<place where sort value is from>),`+
+  ` [(<place where sort value is from>)_value]:<numerical sort for [sort category]>`+
+  ` relavancyScore:<score from 1 to 10 of how relevant  <chatGPT answer goes here> is to <relevant thing goes here>  >,`+
+  ` relevancyReason:<reason for relevancy score>,`+
+    ` <attribute>: <attribute_value (dont give vague values for attributes)>,`+
+    ` relation:< extremely unique non-fiction description of how <relevant thing> is relavant to the <answer> , that is different from the relevancyReason>  `+
+    `  , length:<list length> }]` +
+    ` each answer should only contain 1 non-fiction response `+
+    ` never include items that have [${req.body.attributeType.join(" or ")}] attribute values equal to any in this list ([${req.body.antiAttributeType.join(" or ")}]) `+
+    ` never return non-fiction items with greater than 5 relevancyScore `+
+    ` never return non-fictional values `+
+    ` never return an array shorter than ${req.body.selectedLength} `+
+
+    ` return the list in json format` 
   try {
     let answer = await askChatGPT(question);
     console.log(answer);
