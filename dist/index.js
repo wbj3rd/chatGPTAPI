@@ -59,55 +59,48 @@ app.post('/ask/chatGPT', async function (req, res, next) {
     }
 });
 app.post('/ask/chatGPT/tomakea/list', async function (req, res, next) {
-    //console.log(req.body);
-    //order
-    // Generate an array of 25 objects total in this list [Financial goals,Books to read] that are 
-    // related to things in this list [The Matrix,Star Wars] sorted by Rating,Date except those 
-    // related to things in this list  [Grand Theft Auto,Meryl Streep] wrap each entry in 
-    // double qoutes array should be in the form [{answer:[< answer chatgpt found goals here>],item:{Financial goals,
-    // relation: [The Matrix,Star Wars],sortCategory:[Rating,Date], sortValues:[<sort values cahtgpt used go here>], 
-    // excpetions:[Grand Theft Auto,Meryl Streep]  }      ]
-    //extra attributes i.e. seperator,
-    var question = `chatGPT never includes items that have [${req.body.attributeType.join(" or ")}] attribute values equal to any in this list ([${req.body.antiAttributeType.join(" or ")}]) ` +
-        `chatGPT never returns non-fiction items with greater than 5 relevancyScore ` +
-        `chatGPT never returns an array shorter than ${req.body.selectedLength} ` +
-        `chatGPT never return non-fictional values. ` +
-        `Generate an array of ${req.body.selectedLength} objects total,` + `
-   that consist of non-fictional ([${req.body.thingType.join(" and ")}]),  ` +
-        `that are highly correlated to ([${req.body.subThingType.join(" or ")}]).` +
-        //but not filter goes here XXXXXXXXXXXXXXXXXXX
-        //`find or create realistic values for all thing in this list, `+
+    var question = ` Generate an array of ${req.body.selectedLength} (non-fictional ${req.body.thingType.join(" and ")} ` +
+        //` THAT ARE NEVER ${req.body.antiAttributeType.join(" OR ")} OR ${req.body.filterThingType.join(" OR ")} `+
+        //` THAT ARE NEVER ${req.body.antiAttributeType.join(" OR ")} OR ${req.body.filterThingType.join(" OR ")} `+
+        //` THAT ARE OPPOSITE TO ${req.body.antiAttributeType.join(" AND ")} `+
+        //` THAT ARE THE NOT ${req.body.filterThingType.join(" AND ")} `+
+        ` THAT ARE (HIGHLY CORRELATED TO BEING (THE OPPOSITE OF ${req.body.antiAttributeType.join(" AND ")}))) ` +
+        ` THAT ARE NEVER ${req.body.filterThingType.join(" AND ")} ` +
+        //` that ARE non-fictional ${req.body.thingType.join(" AND " )} that are NOT ${req.body.filterThingType.join(" OR ")} and are`+
+        //` highly correlated to the opposite of ${req.body.antiAttributeType.join(" AND ")},  `+
+        ` THAT ARE ALWAYS highly correlated ([${req.body.subThingType.join(" AND ")}]).` +
+        ` THAT ARE NEVER non-fiction (${req.body.thingType.join(" OR ")}) ` +
+        ` include at least one each (${req.body.thingType.join(", ")}) ` +
+        ` include at least one each(${req.body.subThingType.join(" AND ")}) ` +
+        ` include at least one of each of the following ${req.body.thingType.join(" AND")} ` +
+        ` For each ${req.body.thingType.join(" AND ")} in the array ask yourself is this ${req.body.thingType}  ${req.body.filterThingType.join(" or ")}. If it is remove it.` +
+        ` For each ${req.body.thingType.join(" AND ")} in the array ask yourself is this ${req.body.thingType}   ${req.body.antiAttributeType.join(" and ")}. If it is remove it. ` +
         `Find accurate non-fiction values for the attributes ([${req.body.attributeType.join(" and ")}]) for each array entry.` +
-        `Add 5 attributes common to ${req.body.subThingType}  ${req.body.thingType}  that would help describe each entry.` +
-        `never include items that have ${req.body.attributeType.join(" or ")} values equal to ([${req.body.antiAttributeType.join(" and ")}])` +
+        `Add 5 attributes common to ${req.body.subThingType.join(" AND ")}  ${req.body.thingType.join(" AND ")}  that would help describe each entry.` +
+        //`never include items that have ${req.body.attributeType.join(" or ")} values equal to ([${req.body.antiAttributeType.join(" and ")}])`+
         `sort by ([${req.body.orderType.join(" and ")}]) desc` +
         `` +
-        // accidentally jewel  add extra field to array
-        //`exclude those related to ${req.body.filter2.join(",")} `+
-        //`Exclude those related to (one of the things in this list[${req.body.join(", ")}](one of the things in this list[${req.body.filter2.join(", ")}])]. `+
-        ` The answer should be in the form ` +
-        `[{answer: <answer chatgpt found goes here> ,` +
-        ` category: <thing goes here>,` +
-        ` relavantTo: <relevant thing goes here>,` +
-        ` sortType:(<sort category>),` +
-        ` [(sort  category)]:(<place where sort value is from>),` +
-        ` [(<place where sort value is from>)_value]:<numerical sort for [sort category]>` +
-        ` relavancyScore:<score from 1 to 10 of how relevant  <chatGPT answer goes here> is to <relevant thing goes here>  >,` +
-        ` relevancyReason:<reason for relevancy score (less than 5 words)>,` +
-        ` <attribute>: <attribute_value (dont give vague values for attributes)>,` +
-        ` relation:< extremely unique non-fiction description of how <relevant thing> is relavant to the <answer> , that is different from the relevancyReason>  ` +
-        `  , length:<list length> }]` +
+        ` The answers should be in the form ` +
+        `[{"answer": "<answer chatgpt found goes here>",` +
+        ` "category": "<thing goes here>",` +
+        ` "relavantTo": "<one of subThing go here>",` +
+        ` "relavancyScore":"<score from 1 to 10 of how relevant  <chatGPT answer goes here> is to <relevant thing goes here>  >",` +
+        ` "relevancyReason":"<reason for relevancy score (less than 5 words)>",` +
+        ` "<attribute>": "<attribute_value (dont give vague values for attributes) always surround in double qoutes>",` +
+        ` "relation":"< extremely unique non-fiction description of how <relevant thing> is relavant to the <answer> , that is different from the relevancyReason>"  ` +
+        ` "explanation":"< Explain how is this ${req.body.thingType} is ${req.body.subThingType.join(" AND ")} and ARE NOT ${req.body.filterThingType.join(" or  ")} and  ARE NOT ${req.body.antiAttributeType.join(" AND ")}> " ` +
+        ` }]` +
         ` each answer should only contain 1 non-fiction response ` +
-        ` never include items that have [${req.body.attributeType.join(" or ")}] attribute values equal to any in this list ([${req.body.antiAttributeType.join(" or ")}]) ` +
-        ` never return non-fiction items with greater than 5 relevancyScore ` +
-        ` never return non-fictional values ` +
-        ` never return an array shorter than ${req.body.selectedLength} ` +
-        `count the list before you return it and make sure it is as long as i requested` +
+        ` reomve answers that have a relevancyScore lower than 5` +
+        //`count the list before you return it and make sure it is as long as i requested`+
         ` return the list in json format`;
+    //` remove any of the  ${req.body.thingType.join(" and ")} that are NOT THE OPPOSITE OF ${req.body.antiAttributeType.join(" AND ")} `
     try {
         let answer = await askChatGPT(question);
+        console.log("\n");
         console.log(answer);
-        res.json({ answer: answer });
+        console.log("\n");
+        res.json(answer);
     }
     catch (err) {
         next(err);
