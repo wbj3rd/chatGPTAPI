@@ -36,7 +36,8 @@ const app = express();
 app.use(cors({
     origin: [
         'https://compliancegpt.us',
-        'http://localhost:4200'
+        'http://localhost:4200',
+        'https://makealist.ai'
     ]
 }));
 app.use(timeout('60s'));
