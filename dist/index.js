@@ -105,6 +105,7 @@ async function createNewClient(token) {
             grant_types: ['authorization_code', 'refresh_token'],
             client_name: 'One Step CLoser',
             client_uri: 'https://anyweb.com',
+            defaultClientScopes: ['API Keys', 'ACCESS SCOPE'],
         }, { headers: authHeader });
         // handle successful response here
     }
@@ -165,8 +166,13 @@ app.use(bodyParser.json());
 app.get('/', function (req, res) {
     res.send('Hello World');
 });
-app.post('/get/apiKey', async function name(req, res, next) {
-    let apiKey = await createNewClient(req.body.token);
+app.post('/get/apiKey', async function (req, res, next) {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if (!token) {
+        return res.status(401).json({ message: 'Authorization header is missing or invalid' });
+    }
+    let apiKey = await createNewClient(token);
     console.log(apiKey);
     res.json(apiKey);
 });

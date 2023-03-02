@@ -128,6 +128,8 @@ const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('bas
         grant_types: ['authorization_code', 'refresh_token'],
         client_name: 'One Step CLoser',
         client_uri: 'https://anyweb.com',
+        defaultClientScopes: ['API Keys','ACCESS SCOPE'],
+
       },
       {headers:authHeader},
     );
@@ -199,11 +201,17 @@ app.get('/', function (req, res) {
 });
 
 
-app.post('/get/apiKey', async function name(req, res,next) {
+app.post('/get/apiKey', async function(req, res,next) {
     
-    let apiKey = await createNewClient(req.body.token)
-    console.log(apiKey)
-    res.json(apiKey)
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'Authorization header is missing or invalid' });
+  }
+
+  let apiKey = await createNewClient(token);
+  console.log(apiKey);
+  res.json(apiKey);
 
 })
 
