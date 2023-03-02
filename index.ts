@@ -5,6 +5,24 @@ import cors from 'cors';
 import http from 'http';
 import timeout from 'connect-timeout';
 import contentful from 'contentful'
+import axios from 'axios';
+import e from "cors";
+
+interface TokenIntrospectionResponse {
+  [x: string]: any;
+  active: boolean;
+}
+
+interface ClientRegistrationResponse {
+  clientId: string;
+  clientSecret: string;
+  registrationAccessToken: string;
+}
+
+interface NewClientObject {
+  clientId: string;
+  clientSecret: string;
+}
 let options = {
   temperature: 0.7, // OpenAI parameter
   max_tokens: 1000, // OpenAI parameter [Max response size by tokens]
@@ -18,7 +36,129 @@ let options = {
 
 //let bot = new ChatGPT("<OPENAI_API_KEY>", options); 
 
+// CLIENT SECRET AND ID FOR KEYCLOAK
+// CLIENT ID = admin
+// CLIENT SECRET = D7uv5zTmZCOn6gtvEcmHBsLkjku3YU2V
+ const REGISTRATION_ACCESS_TOKEN:string = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJNUzZFNFZWS2wyYVZWVDgwbkc3bXJuaG9JbzM3N2NYeEZnMGNCT1M0bE5JIn0.eyJleHAiOjE2Nzc3MDQ3NzIsImlhdCI6MTY3NzcwNDQ3MiwianRpIjoiM2YzYWNhNzQtZmNmYS00YjEzLTk0YzUtZGY3NDVkNGY1NWQ4IiwiaXNzIjoiaHR0cHM6Ly9rZXljbG9hay5xdWVjYWxsLmJpei9yZWFsbXMvZ0FQSSIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiIyMDQ3MjZkOC1mYTMyLTQ5NWItYjgxMS03ZTVjZDIyMTI1NGQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJhZG1pbiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiQVBJX1VTRVJfUk9MRSIsIm9mZmxpbmVfYWNjZXNzIiwiZGVmYXVsdC1yb2xlcy1nYXBpIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbImNyZWF0ZS1jbGllbnQiXX0sImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImNsaWVudEhvc3QiOiIxMC4yLjAuMSIsImNsaWVudElkIjoiYWRtaW4iLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInRydXN0ZWQtaG9zdHMiOiIqIiwicHJlZmVycmVkX3VzZXJuYW1lIjoic2VydmljZS1hY2NvdW50LWFkbWluIiwiY2xpZW50QWRkcmVzcyI6IjEwLjIuMC4xIn0.bsA2MPt8hn0wsFKgjWgcgOLIYAM0TG2Q-NQTak9DqjPnx8aQX1rDrPq_K0Z-h1gyRyV19kUHpAo6vupCWVojN1kjPMZytD9xZhq9ogqZCeNS46cfkM027bIAPJBjlc_F0oOtz1BSHxJEXwLZxpbWRqcybxAIY2tsPfafKMfbiCkZiiWsNL9RvF_YQmA8KolllxvjB488s7kEhFdXEwvMECMAvyAQ1sLjTNVXUCkxsPCawVpENbH5h_OUqt34jEwjWirH3Ku7SadxToOVus1BK-lOYz3HQjQ8nJY1Rb8gegss-tfqTILgvWswOe84iH37yzqAhfTtSKdkJ2T0d_Da9g"
+async function createNewClient(token: string){
+  const introspectUrl = 'https://keycloak.quecall.biz/realms/gAPI/protocol/openid-connect/token/introspect';
+  const clientRegistrationUrl = 'https://keycloak.quecall.biz/realms/gAPI/clients-registrations/openid-connect';
+  const url = 'https://keycloak.quecall.biz/realms/gAPI/protocol/openid-connect/token/introspect';
+const username = 'admin';
+const password = 'D7uv5zTmZCOn6gtvEcmBbsLjk u3YU2V';
+const authHeader = `Basic ${Buffer.from(`${username}:${password}`).toString('base64')}`;
+  var clientRegistrationResponse: any = {}
+  var introspectResponse: any = {}
+  // Introspect the token to ensure it's valid
+  //const credentials = Buffer.from('admin:D7uv5zTmZCOn6gtvEcmHBsLkjku3YU2V', 'utf-8'); 
+   const headers = {
+   // Authorization: `Basic YWRtaW46RDd1djV5VG1aQ09uNmd0dkVjbUhCc0xramt1M1lVMlY=`,
+    'Content-Type': 'application/x-www-form-urlencoded',
+  };
 
+  const data = new URLSearchParams();
+  data.append('token', token);
+  
+  //check token
+ 
+  try {
+    const data = new URLSearchParams();
+    data.append('token', token);
+    const authHeader = {
+      Authorization: `Basic ${Buffer.from(`admin:D7uv5zTmZCOn6gtvEcmHBsLkjku3YU2V`).toString('base64')}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+    //console.log(data.toString())
+    //console.log(authHeader)
+   introspectResponse = await  axios.post(url, data.toString(), {headers:authHeader})
+    //console.log(introspectResponse)
+    // handle successful response here
+  } catch (error:any) {
+    // handle error here
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Server responded with an error:', error.response.data);
+      console.error('Status code:', error.response.status);
+      console.error('Headers:', error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('No response received:', error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error:', error.message);
+    }
+    
+    // handle the error here
+  }
+  // get new access token for admin client
+  var response:any = {}
+  const keycloakEndpoint = 'https://keycloak.quecall.biz/realms/gAPI/protocol/openid-connect/token';
+  try{
+  response = await axios.post(keycloakEndpoint, {
+    grant_type: 'client_credentials',
+    client_id: 'admin',
+    client_secret: 'D7uv5zTmZCOn6gtvEcmHBsLkjku3YU2V'
+  },{headers:headers})
+}catch(error:any){
+  //console.log(error)
+} //console.log(response)
+  var access_token = response.data.access_token
+  // create new client for user
+  if (!introspectResponse.data.active) {
+    throw new Error('Token is not active');
+  }
+  //console.log(Object.keys(introspectResponse))
+  //console.log(introspectResponse.data)
+  //console.log(introspectResponse.config)
+  // call to keycloak and get token for ADMIN - client who has permission to add other clients
+  // Create the new client registration
+  try {
+    const authHeader = {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json'
+    };
+
+
+     clientRegistrationResponse = await axios.post<ClientRegistrationResponse>(
+      clientRegistrationUrl,
+      {
+        redirect_uris: ['https://example.com/callback'],
+        response_types: ['code'],
+        grant_types: ['authorization_code', 'refresh_token'],
+        client_name: 'One Step CLoser',
+        client_uri: 'https://anyweb.com',
+      },
+      {headers:authHeader},
+    );
+    
+    // handle successful response here
+  
+  } catch (error:any) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.error('Server responded with an error:', error.response.data);
+      console.error('Status code:', error.response.status);
+      console.error('Headers:', error.response.headers);
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('No response received:', error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error('Error:', error.message);
+    }
+    
+    // handle the error here
+  }
+  
+console.log(Object.keys(clientRegistrationResponse))
+console.log(clientRegistrationResponse.data)
+  return {
+    clientId: clientRegistrationResponse.data.client_id,
+    clientSecret: clientRegistrationResponse.data.client_secret,
+  };
+}
 
 async function askChatGPT(question: string) {
   console.log(question);
@@ -59,7 +199,13 @@ app.get('/', function (req, res) {
 });
 
 
+app.post('/get/apiKey', async function name(req, res,next) {
+    
+    let apiKey = await createNewClient(req.body.token)
+    console.log(apiKey)
+    res.json(apiKey)
 
+})
 
 
 app.post('/ask/chatGPT', async function (req, res, next) {
