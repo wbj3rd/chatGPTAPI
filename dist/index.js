@@ -170,11 +170,13 @@ app.post('/get/apiKey', async function (req, res, next) {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1];
     if (!token) {
-        return res.status(401).json({ message: 'Authorization header is missing or invalid' });
+        res.status(401).json({ message: 'Authorization header is missing or invalid' });
     }
-    let apiKey = await createNewClient(token);
-    console.log(apiKey);
-    res.json(apiKey);
+    else {
+        let apiKey = await createNewClient(token);
+        console.log(apiKey);
+        res.json(apiKey);
+    }
 });
 app.post('/ask/chatGPT', async function (req, res, next) {
     console.log(req.body);
